@@ -4,3 +4,9 @@
 - Livestreams hinzugefügt
 - Sonderbehandlung für die Kategorie "Plenarsitzungen"
 - Icon hinzugefügt
+0.2.1
+- Fix für Videos
+- Fix für Gotham
+0.2.2
+- Themen Name wird wieder richtig extrahiert
+- Icons bei Plenarvideos werden wieder richtig angezeigt

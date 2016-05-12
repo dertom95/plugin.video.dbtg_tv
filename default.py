@@ -16,15 +16,19 @@ def MAIN():
 	match_themen=re.compile('<div class="mediathekVLBlock(.+?)Videos', re.DOTALL).findall(match_auswahl[0])
 	for thema in match_themen:
 		match_thumb=re.compile('<img src="(.+?)"', re.DOTALL).findall(thema)
+	
 		match_name=re.compile('<h2>(.+?)</h2>', re.DOTALL).findall(thema)
-		match_desc=re.compile('<p>(.+?)</p>', re.DOTALL).findall(thema)
+		match_name=re.compile('<h2><a.+?>(.+?)</a></h2>', re.DOTALL).findall(thema)
+		#match_desc=re.compile('<p>(.+?)</p>', re.DOTALL).findall(thema)
 		match_url=re.compile('<a href="(.+?)"', re.DOTALL).findall(thema)
 		url = baseurl+'/Mediathek/index.jsp'+match_url[0].replace('&amp;','&')
 
+		if (match_thumb[-1].startswith("http")==False): 
+			match_thumb[-1]=baseurl+match_thumb[-1];
 		if match_name[0] == 'Plenarsitzungen':#wechselt, beobachten!
-			addDir(match_name[0],url,4,baseurl+match_thumb[-1])
+			addDir(match_name[0],url,4,match_thumb[-1])
 		else:
-			addDir(match_name[0],url,3,baseurl+match_thumb[-1])
+			addDir(match_name[0],url,3,match_thumb[-1])
 
 
 def LIVE(url):#1
@@ -103,7 +107,10 @@ def THEMEN_PLENAR(url):#4
 			match_url=re.compile('<a href="(.+?)"', re.DOTALL).findall(entry)
 			url = baseurl+'/Mediathek/index.jsp'+match_url[0].replace('&amp;','&')
 			name = replace(match_name[0]+' - '+match_desc[0])
-			addLink(name,url,5,baseurl+match_thumb[0])
+			print("PP THUMB:"+match_thumb[0])
+			if (match_thumb[0].startswith("http")==False):
+				match_thumb[0]=baseurl+match_thumb[0]
+			addLink(name,url,5,match_thumb[0])
 
 		match_next=re.compile('<a href="(.+?)" title="Ergebnisliste weiter">').findall(response)
 
@@ -116,7 +123,8 @@ def THEMEN_PLENAR(url):#4
 
 def PLAY_THEMEN(url,name):#5
 	response=getUrl(url)
-	match_video=re.compile('data-downloadurl="(.+?)"', re.DOTALL).findall(response)
+	#match_video=re.compile('data-downloadurl="(.+?)"', re.DOTALL).findall(response)
+	match_video=re.compile('name="data-downloadUrl" value="(.+?)"', re.DOTALL).findall(response)
         listitem = xbmcgui.ListItem(path=match_video[0])
         return xbmcplugin.setResolvedUrl(pluginhandle, True, listitem)
 
